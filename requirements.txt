@@ -2,3 +2,6 @@ flask
 Flask-JWT-Extended
 flask-bcrypt
 mongoose
+pymongo
+dotenv
+mongoengine
