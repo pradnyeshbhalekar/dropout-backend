@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import uuid
 from models.student import User
+=======
+# utils/utils.py
+import uuid
+from models.user import User
+>>>>>>> features/upload-student-details
 
 ROLE_PREFIX = {
     "student": "STU",

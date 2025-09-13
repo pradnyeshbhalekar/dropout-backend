@@ -1,28 +1,27 @@
-# models/student.py
-from mongoengine import Document, StringField, DateTimeField
+from mongoengine import (
+    Document,
+    ReferenceField,
+    IntField,
+    StringField,
+    DictField,
+    BooleanField,
+    DateTimeField
+)
 import datetime
+from models.user import User
 
-class User(Document):
-    meta = {"collection": "users"}  # optional but explicit
-    userId = StringField(required=True, unique=True)   # STU001 / CNS001 / ADM001
-    name = StringField(required=True)
-    email = StringField()
-    passwordHash = StringField(required=True)          # bcrypt hash
-    role = StringField(required=True, choices=["student", "counselor", "admin"])
-    status = StringField(default="active")             # active | inactive
-    lastLogin = DateTimeField()
-    createdAt = DateTimeField(default=datetime.datetime.utcnow)
-    updatedAt = DateTimeField(default=datetime.datetime.utcnow)
+class StudentProfile(Document):
+    user = ReferenceField("User", required=True, unique=True)  
 
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "userId": self.userId,
-            "name": self.name,
-            "email": self.email,
-            "role": self.role,
-            "status": self.status,
-            "lastLogin": self.lastLogin.isoformat() if self.lastLogin else None,
-            "createdAt": self.createdAt.isoformat(),
-            "updatedAt": self.updatedAt.isoformat(),
-        }
+    age = IntField()
+    gender = StringField(choices=['Male', 'Female', 'Other'])
+    socioEconomicBackground = DictField()
+    firstGenStudent = BooleanField()
+    background = StringField(choices=["rural", "urban"])
+
+    course = StringField(required=True)
+    year = IntField()
+    semester = IntField()
+    institutionType = StringField(choices=['public', 'private'])
+
+    created_at = DateTimeField(default=datetime.datetime.utcnow)

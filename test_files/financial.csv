@@ -1,0 +1,3 @@
+userId,tuitionStatus,scholarship,loanDependency,partTimeJob
+STU-DC20EFFC,on-time,True,False,False
+STU-002126C9,delayed,False,True,True
