@@ -1,6 +1,6 @@
 # routes/auth.py
 from flask import Blueprint, request, jsonify
-from models.student import User
+from models.user import User
 from extensions import bcrypt
 from utils.utils import generate_user_id, email_in_use, userId_in_use
 import datetime

@@ -1,0 +1,3 @@
+userId,age,gender,incomeLevel,parentOccupation,firstGenStudent,background,course,year,semester,institutionType
+STU-002126C9,21,Male,medium,Teacher,True,urban,Engineering,2,4,private
+STU-DC20EFFC,20,Female,low,Farm,False,rural,Arts,1,2,public

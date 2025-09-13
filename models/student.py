@@ -8,10 +8,10 @@ from mongoengine import (
     DateTimeField
 )
 import datetime
-
+from models.user import User
 
 class StudentProfile(Document):
-    # user = ReferenceField("User", required=True, unique=True)  # uncomment once User model is ready
+    user = ReferenceField("User", required=True, unique=True)  
 
     age = IntField()
     gender = StringField(choices=['Male', 'Female', 'Other'])

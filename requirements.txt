@@ -5,3 +5,4 @@ mongoose
 pymongo
 dotenv
 mongoengine
+uuid
