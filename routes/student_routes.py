@@ -179,3 +179,4 @@ def upload_student_csv():
         "message": "Students uploaded",
         "profiles": created_profiles
     }), 201
+ 

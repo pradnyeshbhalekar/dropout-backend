@@ -6,6 +6,7 @@ import csv, io
 
 attendance_bp = Blueprint('attendance', __name__)
 
+#working
 @attendance_bp.route('/attendance', methods=['POST'])
 def upload_attendance_csv():
     file = request.files.get('file')
@@ -63,7 +64,8 @@ def upload_attendance_csv():
         "skipped": skipped_rows
     }), 201
 # ✅ Fetch attendance history for a student
-@attendance_bp.route('/attendance/<userId>', methods=['GET'])
+#working
+@attendance_bp.route('/attendance/record/<userId>', methods=['GET'])
 def get_attendance_history(userId):
     user = User.objects(userId=userId).first()
     if not user:
@@ -87,9 +89,9 @@ def get_attendance_history(userId):
         "attendanceHistory": data
     }), 200
 
-
+#doubtful
 # ✅ Attendance summary (per semester + overall)
-@attendance_bp.route('/attendance/<userId>/summary', methods=['GET'])
+@attendance_bp.route('/attendance/summary/<userId>', methods=['GET'])
 def get_attendance_summary(userId):
     user = User.objects(userId=userId).first()
     if not user:
@@ -118,7 +120,8 @@ def get_attendance_summary(userId):
 
 
 # ✅ Filter students by low attendance
-@attendance_bp.route('/attendance', methods=['GET'])
+#working
+@attendance_bp.route('/attendance/defaulters', methods=['GET'])
 def filter_low_attendance():
     low_attendance = request.args.get("low_attendance", type=float)
     if not low_attendance:

@@ -5,7 +5,7 @@ from models.user import User
 import csv, io
 
 financial_bp = Blueprint('financial', __name__)
-
+#working
 @financial_bp.route('/financial', methods=['POST'])
 def upload_financial_csv():
     file = request.files.get('file')
@@ -38,9 +38,10 @@ def upload_financial_csv():
         'message': "Financial Records uploaded",
         'records': created_records
     }), 201
-    
+
+#working
 # ✅ Get financial details for a specific student
-@financial_bp.route('/financial/<userId>', methods=['GET'])
+@financial_bp.route('/financial/record/<userId>', methods=['GET'])
 def get_financial_details(userId):
     user = User.objects(userId=userId).first()
     if not user:
@@ -62,9 +63,9 @@ def get_financial_details(userId):
         "partTimeJob": record.partTimeJob
     }), 200
 
-
+#working
 # ✅ Filter students (loan dependency or scholarship)
-@financial_bp.route('/financial', methods=['GET'])
+@financial_bp.route('/financial/aid', methods=['GET'])
 def filter_financial_records():
     loan_dependency = request.args.get("loanDependency")
     scholarship = request.args.get("scholarship")
