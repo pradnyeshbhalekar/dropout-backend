@@ -62,3 +62,79 @@ def upload_attendance_csv():
         "created": created_attendance,
         "skipped": skipped_rows
     }), 201
+# ✅ Fetch attendance history for a student
+@attendance_bp.route('/attendance/<userId>', methods=['GET'])
+def get_attendance_history(userId):
+    user = User.objects(userId=userId).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    profile = StudentProfile.objects(user=user).first()
+    if not profile:
+        return jsonify({"message": "Student profile not found"}), 404
+
+    records = Attendance.objects(student=profile).order_by("semester")
+    data = [
+        {
+            "semester": r.semester,
+            "attendancePercentage": r.attendancePercentage,
+            "absenteeDays": r.absenteeDays
+        } for r in records
+    ]
+
+    return jsonify({
+        "userId": userId,
+        "attendanceHistory": data
+    }), 200
+
+
+# ✅ Attendance summary (per semester + overall)
+@attendance_bp.route('/attendance/<userId>/summary', methods=['GET'])
+def get_attendance_summary(userId):
+    user = User.objects(userId=userId).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    profile = StudentProfile.objects(user=user).first()
+    if not profile:
+        return jsonify({"message": "Student profile not found"}), 404
+
+    records = Attendance.objects(student=profile)
+    if not records:
+        return jsonify({"message": "No attendance records found"}), 404
+
+    total_percent = sum([r.attendancePercentage for r in records])
+    avg_attendance = round(total_percent / len(records), 2)
+    total_absentees = sum([r.absenteeDays for r in records])
+
+    per_semester = {r.semester: r.attendancePercentage for r in records}
+
+    return jsonify({
+        "userId": userId,
+        "averageAttendance": avg_attendance,
+        "attendancePerSemester": per_semester,
+        "totalAbsenteeDays": total_absentees
+    }), 200
+
+
+# ✅ Filter students by low attendance
+@attendance_bp.route('/attendance', methods=['GET'])
+def filter_low_attendance():
+    low_attendance = request.args.get("low_attendance", type=float)
+    if not low_attendance:
+        return jsonify({"message": "Please provide low_attendance parameter"}), 400
+
+    records = Attendance.objects(attendancePercentage__lt=low_attendance)
+    results = [
+        {
+            "userId": r.student.user.userId,
+            "semester": r.semester,
+            "attendancePercentage": r.attendancePercentage,
+            "absenteeDays": r.absenteeDays
+        } for r in records
+    ]
+
+    return jsonify({
+        "threshold": low_attendance,
+        "students": results
+    }), 200
