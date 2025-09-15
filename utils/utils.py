@@ -1,5 +1,6 @@
+# utils/utils.py
 import uuid
-from models.student import User
+from models.user import User
 
 ROLE_PREFIX = {
     "student": "STU",
