@@ -1,0 +1,3 @@
+userId,Daytime/evening attendance,Educational special needs,Debtor,Tuition fees up to date,Gender,Scholarship holder,Age at enrollment,tuitionStatus,scholarship,loanDependency,partTimeJob,Curricular units 1st sem (enrolled),Curricular units 1st sem (approved),Curricular units 1st sem (grade),Curricular units 2nd sem (enrolled),Curricular units 2nd sem (approved),Curricular units 2nd sem (grade),Dropout_Probability,Risk
+STU-DC20EFFC,1,0,0,1,0,1,20,on-time,True,False,False,6.0,5.0,3.5,0.0,0.0,0.0,0.6959210947877071,High Risk
+STU-002126C9,1,0,1,0,1,0,21,delayed,False,True,True,0.0,0.0,0.0,5.0,5.0,4.0,0.10415600145807717,Low Risk

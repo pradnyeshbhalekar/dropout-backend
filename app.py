@@ -2,7 +2,7 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from config import Config
 from mongoengine import connect  
-from .extension import bcrypt
+from extension import bcrypt
 
 
 app = Flask(__name__)
