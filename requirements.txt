@@ -1,7 +1,10 @@
 flask
 Flask-JWT-Extended
 flask-bcrypt
-mongoose
+flask-cors
+mongoengine
+pyJWT
+python-dotenv
 pymongo
 dotenv
 mongoengine

@@ -1,12 +1,15 @@
 from flask import Flask
-from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from config import Config
 from mongoengine import connect  
-from .extension import bcrypt
+from extensions import bcrypt
 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = Config.SECRET_KEY
+
+# Enable CORS for React Native frontend
+CORS(app, origins="*")
 
 
 connect(
