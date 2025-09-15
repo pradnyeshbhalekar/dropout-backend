@@ -209,4 +209,8 @@ def reset_password():
     user.updatedAt = datetime.datetime.utcnow()
     user.save()
 
+<<<<<<< HEAD
     return jsonify({"message": "Password has been reset successfully"}), 200
+=======
+    return jsonify({"message": "Password has been reset successfully"}), 200
+>>>>>>> main

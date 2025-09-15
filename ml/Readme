@@ -1,0 +1,34 @@
+# ML Folder - Logistic Regression Predictions
+
+This folder contains a pre-trained Logistic Regression model along with the necessary files to make predictions without retraining the model.  
+
+---
+
+## File Structure
+
+ml_folder/
+│
+├── dataset_2nd.csv # Original dataset or any new dataset to predict
+├── logistic_model.joblib # Pre-trained Logistic Regression model
+├── scaler.joblib # Pre-fitted scaler used during training
+├── predict.py # Script to make predictions
+└── predictions.csv # Generated after running predict.py
+
+## How to Use
+
+1. **Ensure Python and required libraries are installed**:
+
+```bash
+pip install pandas scikit-learn joblib
+Place your dataset (with the same feature columns) in this folder. You can use dataset_2nd.csv or replace it with a new CSV file.
+
+Run the prediction script:
+
+bash
+Copy code
+python predict.py
+Check the predictions:
+
+After running the script, a new file predictions.csv will be created.
+
+This file will include a new column Predictions with the model's output for each row in your dataset.
