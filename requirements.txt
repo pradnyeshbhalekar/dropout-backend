@@ -6,3 +6,8 @@ pymongo
 dotenv
 mongoengine
 uuid
+jwt
+numpy
+pandas
+scikit-learn
+joblib
