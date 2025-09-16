@@ -3,7 +3,6 @@ from models.student import StudentProfile
 from models.user import User
 import datetime
 
-
 class Counselor(Document):
     user = ReferenceField(User, required=True, unique=True)   # linked user account
     specialization = StringField(required=True)               # counselor expertise

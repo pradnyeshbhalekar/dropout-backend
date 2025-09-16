@@ -1,4 +1,3 @@
-# models/student.py
 from mongoengine import (
     Document, ReferenceField, IntField, StringField,
     DictField, BooleanField, DateTimeField
@@ -15,7 +14,6 @@ class StudentProfile(Document):
     socioEconomicBackground = DictField()
     firstGenStudent = BooleanField()
     background = StringField(choices=["rural", "urban"])
-
     course = StringField(required=True)
     year = IntField()
     semester = IntField()
@@ -23,5 +21,8 @@ class StudentProfile(Document):
 
     # predicted outcome label (optional)
     risk_label = StringField(choices=['low', 'medium', 'high'])
+
+    # ✅ new field: assigned counselor
+    assigned_counselor = ReferenceField("Counselor", required=False)
 
     created_at = DateTimeField(default=datetime.datetime.utcnow)

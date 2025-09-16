@@ -1,3 +1,5 @@
+# routes/counselor_routes.py
+
 from flask import Blueprint, request, jsonify
 from models.counselor import Counselor, CounselorNote
 from models.student import StudentProfile
@@ -31,7 +33,6 @@ def get_current_counselor():
     return counselor, None, None
 
 
-# ---------- Create Counselor Profile ----------
 @counselor_bp.route("/counselor/create-profile", methods=["POST"])
 def create_counselor_profile():
     auth_header = request.headers.get("Authorization")
@@ -50,19 +51,47 @@ def create_counselor_profile():
     if Counselor.objects(user=user).first():
         return jsonify({"message": "Counselor profile already exists"}), 400
 
+    # ------------------------
+    # Request data
+    # ------------------------
     data = request.get_json() or {}
     specialization = data.get("specialization", "")
     experienceYears = data.get("experienceYears", 0)
     phone = data.get("phone", "")
+    student_ids = data.get("assigned_students", [])
 
+    # ------------------------
+    # Resolve assigned students
+    # ------------------------
+    assigned_students = []
+    for uid in student_ids:
+        student_user = User.objects(userId=uid).first()
+        if not student_user:
+            continue
+
+        student = StudentProfile.objects(user=student_user).first()
+        if not student:
+            # ✅ Auto-create StudentProfile if missing
+            student = StudentProfile(user=student_user).save()
+
+        assigned_students.append(student)
+
+    # ------------------------
+    # Create counselor
+    # ------------------------
     counselor = Counselor(
         user=user,
         specialization=specialization,
         experienceYears=experienceYears,
         phone=phone,
+        assigned_students=assigned_students
     ).save()
 
-    return jsonify({"message": "Counselor profile created", "id": str(counselor.id)}), 201
+    return jsonify({
+        "message": "Counselor profile created",
+        "id": str(counselor.id),
+        "assigned_students": [s.user.userId for s in assigned_students]
+    }), 201
 
 
 # ---------- Update Counselor Profile ----------
@@ -75,7 +104,6 @@ def update_counselor_profile():
     data = request.get_json() or {}
 
     specialization = data.get("specialization")
-    bio = data.get("bio")
     phone = data.get("phone")
     experienceYears = data.get("experienceYears")
 
@@ -84,10 +112,6 @@ def update_counselor_profile():
     if specialization is not None:
         counselor.specialization = specialization
         updated_fields["specialization"] = specialization
-
-    if bio is not None:
-        counselor.bio = bio
-        updated_fields["bio"] = bio
 
     if phone is not None:
         counselor.phone = phone
@@ -137,20 +161,21 @@ def assign_multiple_students():
             skipped.append({"studentId": uid, "reason": "Already assigned"})
             continue
 
+        # ✅ Append StudentProfile reference
         counselor.assigned_students.append(student)
-        assigned.append({
-            "studentId": student.user.userId,
-            "name": student.user.name
-        })
+        assigned.append(uid)
 
+    counselor.updatedAt = datetime.datetime.utcnow()
     counselor.save()
+    counselor.reload()   # ✅ ensures the updated list is fetched from DB
 
     return jsonify({
-        "message": "Students assignment completed",
+        "message": "Students assignment complete",
         "assigned": assigned,
-        "skipped": skipped
-    }), 201
-
+        "skipped": skipped,
+        "totalAssigned": len(assigned),
+        "currentAssigned": [str(s.id) for s in counselor.assigned_students]  # ✅ debugging
+    }), 200
 
 # ---------- Get Assigned Students ----------
 @counselor_bp.route("/counselor/students", methods=["GET"])
@@ -212,7 +237,7 @@ def add_note(student_id):
     student = StudentProfile.objects(user=student_user).first()
     if not student or student not in counselor.assigned_students:
         return jsonify({"message": "Student not found or not assigned"}), 404
-    
+
     data = request.get_json() or {}
     note_text = data.get("note")
     if not note_text:
