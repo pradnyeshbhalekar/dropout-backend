@@ -29,7 +29,7 @@ cp envexample .env
 # Start the Flask development server
 python app.py
 
-# The server runs on http://localhost:5000 by default with debug mode enabled
+# The server runs on http://localhost:5002 by default with debug mode enabled
 ```
 
 ### Database Management
@@ -116,11 +116,38 @@ Each model has corresponding route handlers:
 - `routes/attendance_routes.py` - Attendance tracking
 - `routes/financial_routes.py` - Financial record management
 - `routes/curricular_routes.py` - Curricular unit management
+- `routes/counselor_routes.py` - Counselor dashboard and student management
+- `routes/dashboard_routes.py` - Student dashboard data aggregation
 
 All routes support:
 - CSV bulk import at `/{entity}/csv` endpoints
 - Individual CRUD operations
 - Patching for partial updates
+
+### Key API Endpoints
+
+#### Authentication (`/auth`)
+- `POST /auth/signup` - Create new user (student/counselor/admin)
+- `POST /auth/signin` - Login with JWT token response
+- `GET /auth/profile` - Get current user profile
+- `POST /auth/forgot-password` - Request password reset token
+- `POST /auth/reset-password` - Reset password with token
+
+#### Student Dashboard (`/api`)
+- `GET /api/dashboard/student/<user_id>` - Get comprehensive student data with GPA, attendance, and risk analysis
+
+#### Counselor Dashboard (`/api`)
+- `GET /api/counselor/dashboard` - Get complete dashboard for counselor with all assigned students
+  - Returns aggregated GPA, attendance, and risk distribution
+  - Includes detailed semester-wise data for each student
+- `GET /api/counselor/students` - List all assigned students
+- `GET /api/counselor/students/<student_id>` - Get individual student details with notes
+- `POST /api/counselor/students/assign` - Assign multiple students to counselor
+- `POST /api/counselor/students/<student_id>/notes` - Add counseling note
+- `GET /api/counselor/students/<student_id>/notes` - Get all notes for student
+
+#### Admin Functions (`/api`)
+- `POST /api/admin/assign-student` - Assign student to counselor (admin only)
 
 #### Utilities (`utils/utils.py`)
 - User ID generation with role-based prefixes

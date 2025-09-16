@@ -27,7 +27,7 @@ def upload_financial_csv():
         record = FinancialRecord(
             student=profile,
             tuitionStatus=row.get('tuitionStatus', 'on-time'),
-            scholarship=row.get('scholarShip', "False").lower() == 'true',
+            scholarship=row.get('scholarship', "False").lower() == 'true',
             loanDependency=row.get('loanDependency', "False").lower() == 'true',
             partTimeJob=row.get('partTimeJob', 'False').lower() == 'true'
         ).save()

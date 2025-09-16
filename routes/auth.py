@@ -4,7 +4,9 @@ from models.user import User
 from extensions import bcrypt
 from utils.utils import generate_user_id, email_in_use, userId_in_use
 import datetime, os
-import jwt  # ✅ PyJWT
+import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -29,9 +31,9 @@ def decode_jwt(token):
     """Decode and verify JWT"""
     try:
         return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         return None  # expired
-    except jwt.InvalidTokenError:
+    except InvalidTokenError:
         return None  # invalid
 
 
@@ -195,9 +197,9 @@ def reset_password():
 
     try:
         decoded = jwt.decode(reset_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         return jsonify({"message": "Reset token expired"}), 400
-    except jwt.InvalidTokenError:
+    except InvalidTokenError:
         return jsonify({"message": "Invalid reset token"}), 400
 
     user = User.objects(userId=decoded["userId"], status="active").first()

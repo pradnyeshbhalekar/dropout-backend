@@ -37,6 +37,6 @@ def upload_academic_csv():
         created_records.append(str(record.id))
 
     return jsonify({
-        "mesage":"Academic records uploaded successfully",
+        "message":"Academic records uploaded successfully",
         'records':created_records
     }),201

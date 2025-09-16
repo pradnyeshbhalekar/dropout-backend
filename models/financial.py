@@ -5,3 +5,4 @@ class FinancialRecord(Document):
     tuitionStatus = StringField(choices=["on-time", "delayed"])
     scholarship = BooleanField(default=False)
     loanDependency = BooleanField(default=False)
+    partTimeJob = BooleanField(default=False)

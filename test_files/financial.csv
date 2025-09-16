@@ -1,3 +1,6 @@
 userId,tuitionStatus,scholarship,loanDependency,partTimeJob
 STU-DC20EFFC,on-time,True,False,False
 STU-002126C9,delayed,False,True,True
+STU-F63C4D37,on-time,True,False,True
+STU-EF467A44,on-time,False,False,False
+STU-CF3726B0,delayed,False,True,True

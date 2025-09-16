@@ -45,7 +45,7 @@ def get_dashboard_data(user_id):
         absenteeDays = att.absenteeDays if att else None
 
         dashboard.append({
-            "semester": record.semester,
+            "semester": profile.semester,
             "gpa": record.gpa,
             "cgpa": getattr(record, "cgpa", None),
             "backlogs": record.backlogs,
@@ -57,6 +57,8 @@ def get_dashboard_data(user_id):
                 record.backlogs
             )
         })
+
+    print(dashboard)
 
     return jsonify({
         "student": {
