@@ -3,7 +3,8 @@ from flask import Blueprint, request, jsonify
 from models.user import User
 from extensions import bcrypt
 from utils.utils import generate_user_id, email_in_use, userId_in_use
-import datetime, os, jwt
+import datetime, os
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -28,9 +29,9 @@ def decode_jwt(token):
     """Decode and verify JWT"""
     try:
         return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except jwt.ExpiredSignatureError:
+    except ExpiredSignatureError:
         return None  # expired
-    except jwt.InvalidTokenError:
+    except InvalidTokenError:
         return None  # invalid
 
 
