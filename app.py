@@ -26,7 +26,7 @@ from routes.student_routes import student_bp
 from routes.attendance_routes import attendance_bp
 from routes.financial_routes import financial_bp
 from routes.curricular_routes import curricular_bp
-from routes.dashboard import dashboard_bp
+from routes.dashboard_routes import dashboard_bp
 
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(student_bp, url_prefix="/api")
