@@ -27,6 +27,9 @@ from routes.attendance_routes import attendance_bp
 from routes.financial_routes import financial_bp
 from routes.curricular_routes import curricular_bp
 from routes.dashboard_routes import dashboard_bp
+from routes.dashboard_routes import dashboard_bp
+from routes.counselor_routes import counselor_bp
+
 
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(student_bp, url_prefix="/api")
@@ -35,6 +38,7 @@ app.register_blueprint(attendance_bp, url_prefix='/api')
 app.register_blueprint(financial_bp, url_prefix='/api')
 app.register_blueprint(curricular_bp, url_prefix='/api')
 app.register_blueprint(dashboard_bp, url_prefix='/api')
+app.register_blueprint(counselor_bp, url_prefix='/api')
 
 
 if __name__ == "__main__":
