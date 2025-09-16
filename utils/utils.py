@@ -1,5 +1,5 @@
 import uuid
-from models.student import User
+from models.user import User
 # utils/utils.py
 import uuid
 from models.user import User
