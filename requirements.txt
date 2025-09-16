@@ -1,15 +1,12 @@
 flask
-Flask-JWT-Extended
 flask-bcrypt
 flask-cors
+Flask-JWT-Extended
 mongoengine
-pyJWT
+PyJWT
 python-dotenv
 pymongo
-dotenv
-mongoengine
 uuid
-jwt
 numpy
 pandas
 scikit-learn

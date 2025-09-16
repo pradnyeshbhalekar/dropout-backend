@@ -3,7 +3,8 @@ from flask import Blueprint, request, jsonify
 from models.user import User
 from extensions import bcrypt
 from utils.utils import generate_user_id, email_in_use, userId_in_use
-import datetime, os, jwt
+import datetime, os
+import jwt  # ✅ PyJWT
 
 auth_bp = Blueprint("auth", __name__)
 

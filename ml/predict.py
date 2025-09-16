@@ -31,31 +31,50 @@ df = students.merge(financial, on='userId', how='left')
 df['Debtor'] = df['tuitionStatus'].eq('delayed').astype(int)
 df['Tuition fees up to date'] = df['tuitionStatus'].eq('on-time').astype(int)
 df['Scholarship holder'] = df['scholarship'].astype(int)
-df['Gender'] = df['Gender'].map({'Male':1, 'Female':0})
+
+# Convert Gender to numeric (consistent with training)
+df['Gender'] = df['Gender'].map({'Male': 1, 'Female': 0})
+
 df['Age at enrollment'] = df['Age at enrollment']
 df['Daytime/evening attendance'] = 1  # default
 df['Educational special needs'] = 0   # default
 
-# ========== MAP CURRICULAR UNITS ==========
+# ========== MAP CURRICULAR UNITS (SAFE) ==========
 for sem in [1, 2]:
-    temp = curricular[curricular['semester'] == sem][['userId','enrolled_units','approved_units','average_grade']]
-    suffix = f'_sem{sem}'
-    temp = temp.rename(columns={
-        'enrolled_units': f'enrolled_units{suffix}',
-        'approved_units': f'approved_units{suffix}',
-        'average_grade': f'average_grade{suffix}'
-    })
+    temp = curricular[curricular['semester'] == sem][
+        ['userId', 'enrolled_units', 'approved_units', 'average_grade']
+    ]
+    # Rename columns before merging
+    if sem == 1:
+        temp = temp.rename(columns={
+            'enrolled_units': 'Curricular units 1st sem (enrolled)',
+            'approved_units': 'Curricular units 1st sem (approved)',
+            'average_grade': 'Curricular units 1st sem (grade)'
+        })
+    else:
+        temp = temp.rename(columns={
+            'enrolled_units': 'Curricular units 2nd sem (enrolled)',
+            'approved_units': 'Curricular units 2nd sem (approved)',
+            'average_grade': 'Curricular units 2nd sem (grade)'
+        })
     df = df.merge(temp, on='userId', how='left')
 
-# Rename to match model feature names
-df.rename(columns={
-    'enrolled_units_sem1': 'Curricular units 1st sem (enrolled)',
-    'approved_units_sem1': 'Curricular units 1st sem (approved)',
-    'average_grade_sem1': 'Curricular units 1st sem (grade)',
-    'enrolled_units_sem2': 'Curricular units 2nd sem (enrolled)',
-    'approved_units_sem2': 'Curricular units 2nd sem (approved)',
-    'average_grade_sem2': 'Curricular units 2nd sem (grade)'
-}, inplace=True)
+# Fill missing curricular columns with 0
+for col in [
+    'Curricular units 1st sem (enrolled)',
+    'Curricular units 1st sem (approved)',
+    'Curricular units 1st sem (grade)',
+    'Curricular units 2nd sem (enrolled)',
+    'Curricular units 2nd sem (approved)',
+    'Curricular units 2nd sem (grade)'
+]:
+    if col not in df.columns:
+        df[col] = 0
+    else:
+        df[col] = df[col].fillna(0)
+
+# Drop duplicate columns if any
+df = df.loc[:, ~df.columns.duplicated()]
 
 # ========== FINAL FEATURE LIST ==========
 feature_cols = [
@@ -80,6 +99,13 @@ X = df[feature_cols]
 model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)
 
+# ========== DEBUG FEATURE NAMES ==========
+print("🔍 Scaler expects:", list(scaler.feature_names_in_))
+print("🔍 You provided:", list(X.columns))
+
+# Ensure same feature order as training
+X = X[scaler.feature_names_in_]
+
 # ========== SCALE & PREDICT ==========
 X_scaled = scaler.transform(X)
 probabilities = model.predict_proba(X_scaled)[:, 1]
@@ -98,4 +124,4 @@ df['Risk'] = [risk_category(p) for p in probabilities]
 # ========== SAVE RESULTS ==========
 df.to_csv("predicted_risk.csv", index=False)
 print("✅ Predictions saved to 'predicted_risk.csv'")
-print(df[['userId','Dropout_Probability','Risk']])
+print(df[['userId', 'Dropout_Probability', 'Risk']])
