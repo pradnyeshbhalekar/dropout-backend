@@ -58,10 +58,9 @@ def signup():
         if email_in_use(email):
             return jsonify({"message": "email already in use"}), 400
 
-    # hash password
     pw_hash = bcrypt.generate_password_hash(password).decode("utf-8")
-
     now = datetime.datetime.utcnow()
+
     user = User(
         userId=userId,
         name=name,
@@ -73,10 +72,14 @@ def signup():
         updatedAt=now,
     )
     user.save()
-    print("User saved", user.to_json())
+
+    # 🔥 Auto-create Counselor profile if role=counselor
+    if role == "counselor":
+        from models.counselor import Counselor
+        if not Counselor.objects(user=user).first():
+            Counselor(user=user).save()
 
     return jsonify({"message": "user created", "userId": userId}), 201
-
 
 # ---------- Signin ----------
 @auth_bp.route("/signin", methods=["POST"])
